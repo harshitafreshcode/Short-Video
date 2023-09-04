@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
-import { createUser,  editUser, getAllUser,  removeUser } from '../Controller/userController';
+import { createUser, editUser, getAllUser, removeUser } from '../Controller/userController';
 import { createVideos, generateClip, getVideosInfo } from '../Controller/videoController';
+import { generateClipText, generateClipTitle, generateClips } from '../Controller/textGenerateController';
 const router = express.Router()
 // Craete Schema to give ref
 /**
@@ -148,12 +149,16 @@ router.patch("/edit-user/:id", editUser);
 *       404:
 *         description: Product not found
 */
-
+console.log('123');
 router.delete("/delete-user/:id", removeUser);
-router.post('/creat-vidoes',createVideos)
-router.post('/get-vidoes-info',getVideosInfo)
-router.post('/generate-clip',generateClip)
+router.post('/creat-vidoes', createVideos)
+router.post('/get-vidoes-info', getVideosInfo)
+router.post('/generate-clip', generateClip)
 
+// text Controllers
+router.post('/create-clips', generateClips)
+router.post('/generate-clip-text', generateClipText)
+router.post('/generate-clip-title', generateClipTitle)
 export default router;
 
 
