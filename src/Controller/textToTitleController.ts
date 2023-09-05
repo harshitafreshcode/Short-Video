@@ -53,32 +53,38 @@ async function generateTitles(inputText: any, numTitles = 1) {
 
 export const titleClip = async (req: Request, res: Response) => {
     try {
+        const { text } = req.body;
+        const inputText = `Generate only short and relevent Title from this given artical:${text}`        //     .then(titles => {
 
-        // Example text for title generation
-        const inputText = `It's easy to get started and can be used for prototyping and agile development. It provide fast and highly scalable services. Large ecosystem for open source library. Source code is cleaner and consistent. It uses Javascript everywhere so it's easy for a Javascript programmer to build backend services using Node.js. Use Node.js for own-tend or backend.`
-        // Generate titles based on the input text
-        generateTitles(inputText)
-            .then(titles => {
-                console.log(titles, 'titles');
-                let a: any = []
-                titles.forEach((title: any, index: any) => {
-                    console.log(`Title ${index + 1}: ${title}\n`);
-                    a.push(title)
-                });
-                console.log(titles[0], 'titles[0].title');
-                res.json({ title: titles[0] })
+        await api.completions
+            .create({
+                // engine: 'text-davinci-003', // You can specify the engine you want to use
+                prompt: inputText,
+                max_tokens: 20, // You can adjust the max_tokens to limit the length of the title
+                model: 'text-davinci-003', // Specify the model here
+
             })
-            .catch(err => {
-                console.error('Error:', err);
-                res.send(err)
-
+            .then((response: any) => {
+                const generatedTitle = response.choices[0].text.trim();
+                if (generatedTitle) {
+                    var cleanedString = generatedTitle.replace(/\n/g, '');
+                    cleanedString = cleanedString.replace(/"/g, '');
+                    cleanedString = cleanedString.replace(/^\./, '');
+                }
+                res.json({ title: cleanedString })
+            })
+            .catch((error: any) => {
+                console.error('Error:', error);
+                res.send({ message: error.message });
             });
+
 
 
 
     } catch (error: any) {
         console.error('Error:', error.message);
-        return [];
+        res.send({ message: error.message });
+
     }
 }
 
