@@ -14,6 +14,17 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
 require('dotenv').config();
+const openai = require('openai');
+const { OpenAIApi } = require('openai');
+
+const apiKey = `${process.env.OPENAI_API_KEY}`;
+
+// Initialize the OpenAI API client
+const api = new openai({ key: apiKey });
+
+
+
+
 
 
 // to create a short reels Ffmpeg
@@ -74,41 +85,6 @@ export const generateClips = async (req: Request, res: Response) => {
 }
 
 
-
-// async function transcribe(file: any) {
-//     try {
-//         console.log(file, 'file');
-//         const response = await axios.post(
-//             'https://api.openai.com/v1/audio/transcriptions',
-//             {
-//                 file,
-//                 model: 'whisper-1'
-//             },
-//             {
-//                 headers: {
-//                     'Content-Type': 'multipart/form-data',
-//                     Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
-//                 }
-//             }
-//         );
-//         console.log('**********');
-//         return response.data.text;
-//     } catch (error: any) {
-//         console.log(error, 'error');
-//         if (error.response && error.response.status === 429) {
-//             console.log('---------------');
-//             const retryAfter = parseInt(error.response.headers['retry-after'] || '1');
-//             console.log(`Rate limited. Retrying in ${retryAfter} seconds...`);
-//             await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-//             await transcribe(file); // Retry the request
-
-//         }
-//         return error;
-
-//     }
-// }
-
-
 async function transcribe(file: any) {
     try {
         console.log(file, 'file');
@@ -122,7 +98,7 @@ async function transcribe(file: any) {
                 // timeout: 15000,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+                    'Authorization': `Bearer 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`
                 }
             }
         );
@@ -160,9 +136,6 @@ export const generateClipText = async (req: Request, res: Response) => {
     }
 }
 
-//     apiKey: "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",
-
-
 
 async function generateVideoTitle(videoContent: any) {
     const prompt = `Generate a title for the following video content: "${videoContent}"`;
@@ -190,11 +163,11 @@ async function generateVideoTitle(videoContent: any) {
 // Example usage
 export const generateClipTitle = async (req: Request, res: Response) => {
     try {
-        const videoContent = "First introduced back in 2009 by Ryan Dahl at the annual European JS Conference. Node.js is an application runtime environment that allows you to write server-side applications in JavaScript. Built on top of the Chrome V8 JavaScript engine, it is capable of executing JS code outside of a web browser"
+        const videoContent = "Node.js Ultimate Beginner’s Guide in 7 Easy Steps"
         // const generatedTitle = await generateVideoTitle(videoContent)
         //     .then(title => console.log('Generated Title:', title))
         //     .catch(err => console.error(err));
-        const prompt = `Generate a title for the following text content: "${videoContent}"`;
+        const prompt = `${videoContent}`;
 
         await axios.post('https://api.openai.com/v1/engines/davinci/completions', {
             prompt,
@@ -221,3 +194,76 @@ export const generateClipTitle = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error generating clips' });
     }
 }
+
+
+
+export const generateClipTitleUsingRapid = async (req: Request, res: Response) => {
+    try {
+        // console.log('12');
+        // const videoContent = "First introduced back in 2009 by Ryan Dahl at the annual European JS Conference. Node.js is an application runtime environment that allows you to write server-side applications in JavaScript. Built on top of the Chrome V8 JavaScript engine, it is capable of executing JS code outside of a web browser"
+        // // const generatedTitle = await generateVideoTitle(videoContent)
+        // //     .then(title => console.log('Generated Title:', title))
+        // const options = {
+        //     method: 'POST',
+        //     url: 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-text/',
+        //     headers: {
+        //         'content-type': 'application/json',
+        //         'X-RapidAPI-Key': '02e651eb1emsh32de991b2287b0bp1393f1jsn2de42f1e54a0',
+        //         'X-RapidAPI-Host': 'tldrthis.p.rapidapi.com'
+        //     },
+        //     data: {
+        //         text: 'Six years after Yahoo purchased Tumblr for north of $1 billion, its parent corporation is selling the once-dominant blogging platform. WordPress owner Automattic Inc. has agreed to take the service off of Verizon’s hands. Terms of the deal are undisclosed, but the number is “nominal,” compared to its original asking price, per an article in The Wall Street Journal.',
+        //         min_length: 100,
+        //         max_length: 300
+        //     }
+        // };
+
+
+
+        // try {
+        //     const response = await axios.request(options);
+        //     console.log(response, 'response');
+        //     console.log(response.data);
+        //     res.send(response.data);
+        // } catch (error) {
+        //     console.error(error);
+        //     res.send(error);
+        // }
+
+
+
+        // const text = 'This is a blog post about Node.js';
+
+        // const title = titleGenerator(text);
+
+        // console.log(title);
+        const options = {
+            method: 'POST',
+            url: 'https://api.copy.ai/api/workflow/PKGW-a5d88de1-474f-4618-ab1f-5e9e00b2a9fe/run',
+            headers: { 'Content-Type': 'application/json', 'x-copy-ai-api-key': 'e4ae9419-7534-4af2-b9bf-3f26a56404ce' },
+            data: {
+                startVariables: {
+                    "Input 1": "Can you Generate title for node js tutorails?",
+                    // "Input 2": "<The best way to see an example is to try it!>"
+
+                }, metadata: { api: true }
+            }
+        };
+
+        axios
+            .request(options)
+            .then(function (response) {
+                console.log(response.data);
+                res.send(response.data);
+            })
+            .catch(function (error) {
+                console.error(error);
+                res.send(error);
+            });
+
+    } catch (error) {
+        console.error('Error generating clips:', error);
+        res.status(500).json({ message: 'Error generating clips' });
+    }
+}
+

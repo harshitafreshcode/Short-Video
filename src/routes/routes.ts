@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express'
 import { createUser, editUser, getAllUser, removeUser } from '../Controller/userController';
 import { createVideos, generateClip, getVideosInfo } from '../Controller/videoController';
-import { generateClipText, generateClipTitle, generateClips } from '../Controller/textGenerateController';
+import { generateClipText, generateClipTitle, generateClipTitleUsingRapid, generateClips } from '../Controller/textGenerateController';
+import { titleClip } from '../Controller/textToTitleController';
 const router = express.Router()
 // Craete Schema to give ref
 /**
@@ -159,6 +160,11 @@ router.post('/generate-clip', generateClip)
 router.post('/create-clips', generateClips)
 router.post('/generate-clip-text', generateClipText)
 router.post('/generate-clip-title', generateClipTitle)
+router.post('/generate-clip-title-rapid',generateClipTitleUsingRapid)
+
+router.post('/generate-clip-title-demo', titleClip)
+
+
 export default router;
 
 
