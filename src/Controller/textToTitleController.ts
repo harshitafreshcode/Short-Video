@@ -54,7 +54,7 @@ async function generateTitles(inputText: any, numTitles = 1) {
 export const titleClip = async (req: Request, res: Response) => {
     try {
         const { text } = req.body;
-        const inputText = `Generate only short and relevent Title from this given artical:${text}`        //     .then(titles => {
+        const inputText = `Generate only short and relevant Title from this given artical:${text}`      
 
         await api.completions
             .create({
@@ -77,8 +77,6 @@ export const titleClip = async (req: Request, res: Response) => {
                 console.error('Error:', error);
                 res.send({ message: error.message });
             });
-
-
 
 
     } catch (error: any) {

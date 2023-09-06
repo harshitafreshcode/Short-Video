@@ -12,13 +12,13 @@ export const AppDataSource = new DataSource({
     host: "localhost",
     port: 5432,
     username: "postgres",
-    password: 'new_password',
+    password: 'root',
     database: "swagger_demo",
     synchronize: true,
     logging: false,
     migrations: [path.join(__dirname, "../", `src/migrations/*{.ts,.js}`)],
     migrationsTableName: "migrations",
-    entities: [User,Role,Permission],
+    entities: [User, Role, Permission],
     // entities: [path.join(__dirname, "../", `src/entities/*{.ts,.js}`)],
 
 

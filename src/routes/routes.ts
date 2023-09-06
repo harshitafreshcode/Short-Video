@@ -156,13 +156,15 @@ router.post('/creat-vidoes', createVideos)
 router.post('/get-vidoes-info', getVideosInfo)
 router.post('/generate-clip', generateClip)
 
-// text Controllers
+//* Text Controllers
 router.post('/create-clips', generateClips)
 router.post('/generate-clip-text', generateClipText)
-router.post('/generate-clip-title', generateClipTitle)
-router.post('/generate-clip-title-rapid',generateClipTitleUsingRapid)
+//* Title Generator
+router.post('/generate-clip-title', titleClip)
 
-router.post('/generate-clip-title-demo', titleClip)
+//! For test 
+router.post('/generate-clip-title-demo', generateClipTitle) //demo 
+router.post('/generate-clip-title-rapid', generateClipTitleUsingRapid)//demo
 
 
 export default router;
