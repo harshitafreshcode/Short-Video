@@ -3,6 +3,7 @@ import { createUser, editUser, getAllUser, removeUser } from '../Controller/user
 import { createVideos, generateClip, getVideosInfo } from '../Controller/videoController';
 import { generateClipText, generateClipTitle, generateClipTitleUsingRapid, generateClips } from '../Controller/textGenerateController';
 import { titleClip } from '../Controller/textToTitleController';
+import { VidoeRecord, recordVidoe } from '../Controller/RecordVidoeController';
 const router = express.Router()
 // Craete Schema to give ref
 /**
@@ -166,7 +167,7 @@ router.post('/generate-clip-title', titleClip)
 router.post('/generate-clip-title-demo', generateClipTitle) //demo 
 router.post('/generate-clip-title-rapid', generateClipTitleUsingRapid)//demo
 
-
+router.post('/record-vidoe', VidoeRecord)
 export default router;
 
 
