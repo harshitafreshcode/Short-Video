@@ -11,6 +11,7 @@ const ClientID = "659003527104-16k41adnjoqgdg8m291lpeq2jkfciikq.apps.googleuserc
 const clientSercert = "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"
 const { OAuth2Client } = require('google-auth-library');
 const credentials = require('../src/config/Client_data.json');
+const Meeting = require('google-meet-api').meet;
 
 const { google } = require('googleapis');
 
@@ -25,6 +26,9 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }));
+
+const client = new OAuth2Client(ClientID, clientSercert, 'http://localhost:3000/auth/google/callback');
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -48,38 +52,71 @@ passport.use(
 );
 
 app.get('/auth/google', async (req: any, res: any) => {
-    // passport.authenticate('google', { scope: ['profile', 'email'] })
-    // Create an OAuth2 client instance
-    const { OAuth2Client } = require('google-auth-library');
-    const client = await new OAuth2Client(ClientID, clientSercert, 'http://localhost:3000/auth/google/callback');
-
-    // Generate the URL for Google's OAuth2 consent page
     const authUrl = await client.generateAuthUrl({
         access_type: 'offline', // Get a refresh token for long-term access
         scope: ['https://www.googleapis.com/auth/calendar'], // Specify the scope of access
     });
     console.log(authUrl, 'authUrl');
-    // Redirect the user to the Google OAuth2 consent page
     res.redirect(authUrl);
 });
 
 app.get('/auth/google/callback', async (req: any, res: any) => {
-    const { OAuth2Client } = require('google-auth-library');
-    const client = await new OAuth2Client(ClientID, clientSercert, 'http://localhost:3000/auth/google/callback');
 
     const code = req.query.code;
 
     try {
-        // Exchange the authorization code for an access token
         const { tokens } = await client.getToken(code);
+        console.log(tokens, 'tokens');
+        console.log(tokens?.refresh_token, 'tokens.refresh_token');
 
-        // You can now use 'tokens.access_token' to access Google APIs
-        console.log('Access Token:', tokens.access_token);
+        client.setCredentials(tokens);
+        const calendar = google.calendar({ version: 'v3', auth: client });
+        const event = {
+            summary: 'Meeting Title',
+            start: {
+                dateTime: '2023-09-13T14:02:00',
+                timeZone: 'Asia/Kolkata',
+            },
+            end: {
+                dateTime: '2023-09-13T15:00:00',
+                timeZone: 'Asia/Kolkata',
+            },
+            conferenceData: {
+                createRequest: {
+                    requestId: 'your-unique-request-id',
+                },
+            },
+        };
+        calendar.events.insert(
+            {
+                auth: client,
+                calendarId: 'primary', // Use 'primary' for the user's primary calendar.
+                resource: event,
+                conferenceDataVersion: 1,
+            },
+            (err: any, event: any) => {
+                if (err) {
+                    console.error('Error creating event:', err);
+                    res.status(500).send('Error creating Google Meet event.');
+                } else {
+                    // Meeting({
+                    //     clientId: ClientID,
+                    //     clientSecret: clientSercert,
+                    //     // refreshToken: 'XXXXXXXXXCNfW2MMGvJUSk4V7LplXAXXXX',
+                    //     date: "2023-09-13",
+                    //     time: "14:44",
+                    //     summary: 'summary',
+                    //     location: 'location',
+                    //     description: 'test demo'
+                    // }).then(function (result: any) {
+                    //     // console.log(result);
+                    //     console.log('result', result);
+                    // })
+                    res.send('Google Meet event created: ' + event.data.htmlLink);
+                }
+            }
+        );
 
-        // Store or use the access token as needed
-        // ...
-
-        res.send('Access token obtained. You can now use it for API requests.');
     } catch (error) {
         console.error('Error getting access token:', error);
         res.status(500).send('Error getting access token');
@@ -90,7 +127,7 @@ app.post('/google-calendar', async (req: any, res: any) => {
     const { OAuth2Client } = require('google-auth-library');
     const client = await new OAuth2Client(ClientID, clientSercert, 'http://localhost:3000/auth/google/callback');
     const calendar = google.calendar({ version: 'v3', auth: client });
-    const accessToken = "ya29.a0AfB_byBJzHvZqKMoNPRXurnPHJEAbXusWAWCd0hxiOVgbwEOGlClXydENDSh0gQeq0UqqmmTR2OKcK3wFmuOKKhMDN4Kfx4AnEz8lCU-ZydfVf83wvvY8G-TVQ-YHHITfdYbMBjV2r8_s_hANB4AYbrWQLCkju3tYYEaCgYKAbwSARASFQGOcNnCtHCGnIFO5V-qe6IFSFmvbg0170"
+    const accessToken = "ya29.a0AfB_byBlwqs06B_2QpCPsCx3S4wDVHQ7KNoZD7JRdXbs95ZFAURpDb5kHfFd8CcnBDEcB8iGiw9r4NCUwKPYatwDxpBbO7K4bLYYHAH6McRNOvlKnF5Pu48dOAps9mbue-ZDpws3LJ1eI_E_JwmTvKozbxn6PNkk4p0aCgYKAUISARASFQGOcNnCCCkL2jXhz63GxoPRmE8wNQ0170"
     try {
 
         const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {

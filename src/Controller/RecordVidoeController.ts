@@ -8,6 +8,8 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffprobePath = require('@ffprobe-installer/ffprobe').path;
 const puppeteer = require('puppeteer');
 
+const ClientID = "659003527104-16k41adnjoqgdg8m291lpeq2jkfciikq.apps.googleusercontent.com"
+const clientSercert = "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"
 
 export const recordVidoe = async (req: Request, res: Response) => {
 
@@ -89,7 +91,7 @@ export const recordVidoe = async (req: Request, res: Response) => {
 }
 
 export const VidoeRecord = async (req: Request, res: Response) => {
-  const authToken = "ya29.a0AfB_byCAsZd6KTAmBi_TFf3LDdGGuSIx4FYxN85_-UbUqoXljb7RSdt08uSAawH36wwwzmJwi9FMYBOjGZ9obsx6gqH7VZldYCXSNdBNOzlXtbsNHTLh8GTcRh1lLlYxIOnShEmzGIKiqmqdHGpvizWFIkEPOHpyPQaCgYKAQkSARASFQGOcNnCT32aTanPjwdVHN13Lkhk6A0169"
+  const authToken = "ya29.a0AfB_byBlwqs06B_2QpCPsCx3S4wDVHQ7KNoZD7JRdXbs95ZFAURpDb5kHfFd8CcnBDEcB8iGiw9r4NCUwKPYatwDxpBbO7K4bLYYHAH6McRNOvlKnF5Pu48dOAps9mbue-ZDpws3LJ1eI_E_JwmTvKozbxn6PNkk4p0aCgYKAUISARASFQGOcNnCCCkL2jXhz63GxoPRmE8wNQ0170"
   try {
     const apiUrl = 'https://botsondemand.googleapis.com/v1/createConferenceWithBots'; // Replace with the actual API URL
     const postData = {
@@ -98,7 +100,7 @@ export const VidoeRecord = async (req: Request, res: Response) => {
     }
     const headers = {
       'Authorization': `Bearer ${authToken}`,
-      'Content-Type': 'application/json', 
+      'Content-Type': 'application/json',
     };
     console.log(headers, 'headers');
     axios.post(apiUrl, postData, { headers })
@@ -116,40 +118,6 @@ export const VidoeRecord = async (req: Request, res: Response) => {
   }
 
 }
-
-
-export const calendars = async (req: Request, res: Response) => {
-  
-  const authToken = "ya29.a0AfB_byCAsZd6KTAmBi_TFf3LDdGGuSIx4FYxN85_-UbUqoXljb7RSdt08uSAawH36wwwzmJwi9FMYBOjGZ9obsx6gqH7VZldYCXSNdBNOzlXtbsNHTLh8GTcRh1lLlYxIOnShEmzGIKiqmqdHGpvizWFIkEPOHpyPQaCgYKAQkSARASFQGOcNnCT32aTanPjwdVHN13Lkhk6A0169"
-  try {
-    const apiUrl = 'https://botsondemand.googleapis.com/v1/createConferenceWithBots'; // Replace with the actual API URL
-    const postData = {
-      "numOfBots": 1,
-      "ttlSecs": 100
-    }
-    const headers = {
-      'Authorization': `Bearer ${authToken}`,
-      'Content-Type': 'application/json', 
-    };
-    console.log(headers, 'headers');
-    axios.post(apiUrl, postData, { headers })
-      .then(function (response) {
-        console.log('POST request successful');
-        console.log('Response data:', response.data);
-        res.send('successfull')
-      })
-      .catch(function (error) {
-        console.error('Error making POST request:', error);
-        res.status(500).json({ message: error });
-      });
-  } catch (error) {
-    res.status(500).json({ message: error });
-  }
-
-}
-
-
-
 
 // export const VidoeRecord = async (req: Request, res: Response) => {
 //   const meetingLink = "https://meet.google.com/hra-vxng-spy";
