@@ -7,7 +7,7 @@ import userRouter from "./routes/user";
 
 const express = require('express');
 const app = express();
-const port = 8083;
+const port = 8082;
 
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
